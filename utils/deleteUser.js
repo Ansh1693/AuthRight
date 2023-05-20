@@ -1,8 +1,17 @@
 // const { findOneAndDelete } = require('../models/Otp');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const {validationResult} = require("express-validator")
 
 const deleteUser = async (req, res) => {
+
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+        res.status(400).json({
+            status: false,
+            message: error
+        })
+    }
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username;

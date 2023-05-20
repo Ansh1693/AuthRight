@@ -4,8 +4,16 @@ const bcrypt = require('bcryptjs');
 // const jwt = require('jsonwebtoken');
 // const secret= "Iwillbeagoodprogrammer"
 const {getCookie} = require('./verifyOtp')
+const {validationResult} = require('express-validator')
 
 exports.login = async function(req, res) {
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+        res.status(400).json({
+            status: false,
+            message: error
+        })
+    }
     try {
         const { username , email, password } = req.body;
         const userCheck = await User.findOne({ username: username});
@@ -35,11 +43,11 @@ exports.login = async function(req, res) {
                     });
 
             }else{
-                res.status(400).send('Invalid password');
+                res.status(400).json({status: false , message:'Invalid password'});
             }
         }
 
-        if(!userCheck && !emailCheck) res.status(400).send('Invalid username or email');
+        if(!userCheck && !emailCheck) res.status(400).json({status:false , message:'Invalid username or email'});
 
     } catch (error) {
         res.status(500).json({

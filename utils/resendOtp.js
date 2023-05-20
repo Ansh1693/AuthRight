@@ -4,15 +4,22 @@ const Otp = require('../models/Otp');
 const sendOtp= require('./otp');
 
 const resendOtp = async (req,res)=>{
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+        res.status(400).json({
+            status: false,
+            message: error
+        })
+    }
     const email = req.body.email;
     const type=req.body.type;
     try{
         const otpCheck = await Otp.findOne({user: email});
         if(!otpCheck){
-            return res.status(400).send('Otp not found');
+            return res.status(400).json({status: false , message :'Otp not found'});
         }
         if(otpCheck.used){
-            return res.status(400).send('Otp already used');
+            return res.status(400).json({status: false , message: 'Otp already used'});
         }
         await otpCheck.deleteOne();
         
@@ -26,13 +33,13 @@ const resendOtp = async (req,res)=>{
         const ans = await sendOtp(email, format);
 
         if(ans.status == 400){
-            return res.status(400).json({message: ans.message})
+            return res.status(400).json({status: false , message: ans.message})
         }else{
-            res.status(200).json({message: 'Otp sent successfully'});
+            res.status(200).json({status: true ,message: 'Otp sent successfully'});
         }
 
     }catch(error){
-        res.status(400).send(error.message);
+        res.status(400).json({status: false , message: error.message});
     }
 }
 

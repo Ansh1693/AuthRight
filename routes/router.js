@@ -78,7 +78,6 @@ router
         .notEmpty()
         .withMessage("Password is required")
         .withMessage("Password must be at least 6 characters"),
-      ,
     ],
     deleteUser
   );
@@ -159,6 +158,7 @@ router
         .isEmail()
         .withMessage("Invalid email")
         .normalizeEmail(),
+        body("type").notEmpty().withMessage("Type is required")
     ],
     resendOtp
   );

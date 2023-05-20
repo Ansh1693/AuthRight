@@ -3,6 +3,7 @@ const mongoose  = require('mongoose');
 const app = express();
 const cors = require('cors');
 //Routes
+require("dotenv").config();
 const router = require('express');
 const Router = require('./routes/router');
 
@@ -11,7 +12,7 @@ app.use(cors());
 
 //db connection
 
-mongoose.connect('mongodb://localhost:27017/authright', {
+mongoose.connect(process.env.db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
